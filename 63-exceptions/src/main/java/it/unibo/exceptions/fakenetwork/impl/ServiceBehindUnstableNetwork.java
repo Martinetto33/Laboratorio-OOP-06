@@ -31,7 +31,8 @@ public final class ServiceBehindUnstableNetwork implements NetworkComponent {
          */
         if (!(failProbability >= 0 && failProbability < 1))
         {
-            throw new IllegalArgumentException("Fail probability does not meet requirements!");
+            throw new IllegalArgumentException("Fail probability does not meet requirements! Provided probability is: "
+            + failProbability);
         }
         this.failProbability = failProbability;
         randomGenerator = new Random(randomSeed);
