@@ -47,6 +47,14 @@ public final class UseArithmeticService {
          * This method should re-try to send message to the provided server, catching all IOExceptions,
          * until it succeeds.
          */
+        while (true) {
+            try {
+                server.sendData(message);
+            } catch (final java.io.IOException e) {
+                System.out.println("Exception: " + e);
+                System.out.println("Trying to send data to server once more...");
+            }
+        }
     }
 
     private static String retryReceiveOnNetworkError(final NetworkComponent server) {
