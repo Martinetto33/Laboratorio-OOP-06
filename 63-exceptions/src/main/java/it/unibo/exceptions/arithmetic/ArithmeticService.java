@@ -56,7 +56,7 @@ public final class ArithmeticService {
      */
     public String process() {
         if (commandQueue.isEmpty()) {
-            System.out.println("No commands sent, no result available");
+            throw new IllegalStateException("No commands sent, no result available");
         }
         while (commandQueue.size() != 1) {
             final var nextMultiplication = commandQueue.indexOf(TIMES);
@@ -82,12 +82,16 @@ public final class ArithmeticService {
                 }
             }
         }
-        final var finalResult = commandQueue.get(0);
-        final var possibleException = nullIfNumberOrException(finalResult);
-        if (possibleException != null) {
-            throw new IllegalStateException("Invalid result of operation: " + finalResult);
+        try {
+            final var finalResult = commandQueue.get(0);
+            final var possibleException = nullIfNumberOrException(finalResult);
+            if (possibleException != null) {
+                throw new IllegalStateException("Invalid result of operation: " + finalResult);
+            }
+            return finalResult;
+        } finally {
+            commandQueue.clear();
         }
-        return finalResult;
         /*
          * The commandQueue should be cleared, no matter what, when the method exits
          * But how?
