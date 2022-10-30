@@ -18,7 +18,6 @@ public class GraphImpl<N> implements Graph<N> {
     private int numberOfMapsOfEdges;
     private Map<Integer, Set<Edge<N>>> allEdges;
     private Set<Node<N>> allNodes;
-    private ArrayList<Visit<N>> visits;
 
     public GraphImpl() {
         this.numberOfNodes = 0;
@@ -26,7 +25,6 @@ public class GraphImpl<N> implements Graph<N> {
         this.numberOfMapsOfEdges = 0;
         this.allEdges = new HashMap<>();
         this.allNodes = new HashSet<>();
-        this.visits = null;
     }
 
     private int getKey(N node) {
@@ -184,7 +182,5 @@ public class GraphImpl<N> implements Graph<N> {
         ArrayList<N> path = new ArrayList<>();
         path = this.breadthFirstSearch(source, target, path);
         return path;
-    }
-
-    
+    }  
 }

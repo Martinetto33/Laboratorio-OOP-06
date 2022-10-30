@@ -35,7 +35,7 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      * In order to save the people followed by a user organized in groups, adopt
      * a generic-type Map:  think of what type of keys and values would best suit the requirements
      */
-    Map<String, Set<U>> allFriends;
+    private final Map<String, Set<U>> allFriends;
     /*
      * [CONSTRUCTORS]
      *
@@ -105,10 +105,10 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
 
     @Override
     public List<U> getFollowedUsers() {
-        List<U> defList = new ArrayList<>();
-        for (String elem : this.allFriends.keySet()) {
+        final Set<U> defList = new HashSet<>();
+        for (final String elem : this.allFriends.keySet()) {
             defList.addAll(this.allFriends.get(elem));
         }
-        return defList;
+        return new ArrayList<>(defList);
     }
 }

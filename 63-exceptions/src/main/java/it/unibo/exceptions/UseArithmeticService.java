@@ -3,7 +3,6 @@ package it.unibo.exceptions;
 import it.unibo.exceptions.fakenetwork.api.NetworkComponent;
 import it.unibo.exceptions.fakenetwork.impl.ServiceBehindUnstableNetwork;
 
-import java.io.IOException;
 import java.io.PrintStream;
 
 import static it.unibo.exceptions.arithmetic.ArithmeticService.DIVIDED;
@@ -63,11 +62,9 @@ public final class UseArithmeticService {
          * This method should re-try to retrieve information from the provided server, catching all IOExceptions,
          * until it succeeds.
          */
-        String response = new String();
         while (true) {
             try {
-                response = server.receiveResponse();
-                return response;
+                return server.receiveResponse();
             } catch (final java.io.IOException e) {
                 System.out.println("Exception: " + e);
                 System.out.println("Trying to receive data from server once more...");
