@@ -1,7 +1,6 @@
 package it.unibo.generics.graph;
 
 import it.unibo.generics.graph.api.Graph;
-import it.unibo.generics.graph.api.SearchOption;
 import it.unibo.generics.graph.impl.GraphImpl;
 
 import java.util.Arrays;
@@ -53,7 +52,7 @@ public final class UseGraph {
          * Either the path b,c,a or b,c,d,e,a
          */
         assertIsAnyOf(
-            graph.getPath("b", "a", SearchOption.BFS),
+            graph.getPath("b", "a"),
             Arrays.asList(splitOnWhiteSpace("b c a")),
             Arrays.asList(splitOnWhiteSpace("b c d e a"))
         );
