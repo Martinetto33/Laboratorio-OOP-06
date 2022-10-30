@@ -1,6 +1,7 @@
 package it.unibo.generics.graph;
 
 import it.unibo.generics.graph.api.Graph;
+import it.unibo.generics.graph.api.SearchOption;
 import it.unibo.generics.graph.impl.GraphImpl;
 
 import java.util.Arrays;
@@ -23,7 +24,7 @@ public final class UseGraph {
         /*
          * Test your graph implementation(s) by calling testGraph
          */
-        GraphImpl<String> graph = new GraphImpl<>();
+        Graph<String> graph = new GraphImpl<>();
         testGraph(graph);
     }
 
@@ -39,6 +40,7 @@ public final class UseGraph {
         graph.addEdge("d", "e");
         graph.addEdge("c", "a");
         graph.addEdge("e", "a");
+
         /*
          * Should be ["a","b","c","d","e"], in any order
          */
@@ -51,7 +53,7 @@ public final class UseGraph {
          * Either the path b,c,a or b,c,d,e,a
          */
         assertIsAnyOf(
-            graph.getPath("b", "a"),
+            graph.getPath("b", "a", SearchOption.BFS),
             Arrays.asList(splitOnWhiteSpace("b c a")),
             Arrays.asList(splitOnWhiteSpace("b c d e a"))
         );

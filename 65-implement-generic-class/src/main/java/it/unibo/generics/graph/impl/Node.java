@@ -7,12 +7,14 @@ public class Node<N> {
     private final N data;
     private Colour colour;
     private double distance;
+    private Node<N> parent;
 
     public Node(N data, int id) {
         this.id = id;
         this.data = data;
         this.distance = Double.POSITIVE_INFINITY;
         this.colour = Colour.WHITE;
+        this.parent = null;
     }
 
     public int getId() {
@@ -31,12 +33,20 @@ public class Node<N> {
         return this.distance;
     }
 
+    public Node<N> getParent() {
+        return this.parent;
+    }
+
     public void setDistance(double distance) {
         this.distance = distance;
     }
 
     public void setColour(Colour colour) {
         this.colour = colour;
+    }
+
+    public void setParent(Node<N> parent) {
+        this.parent = parent;
     }
 
     public String toString() {

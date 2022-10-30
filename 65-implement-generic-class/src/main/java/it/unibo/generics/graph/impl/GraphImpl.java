@@ -2,28 +2,33 @@ package it.unibo.generics.graph.impl;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Queue;
 
+import it.unibo.generics.graph.api.Colour;
 import it.unibo.generics.graph.api.Graph;
+import it.unibo.generics.graph.api.SearchOption;
 
 public class GraphImpl<N> implements Graph<N> {
     private int numberOfNodes;
     private int numberOfEdges;
+    private int numberOfMapsOfEdges;
     private Map<Integer, Set<Edge<N>>> allEdges;
     private Set<Node<N>> allNodes;
-
-    
 
     public GraphImpl() {
         this.numberOfNodes = 0;
         this.numberOfEdges = 0;
+        this.numberOfMapsOfEdges = 0;
         this.allEdges = new HashMap<>();
         this.allNodes = new HashSet<>();
     }
 
-    private int getKey (N node) {
+    private int getKey(N node) {
         int keyValue = -1;
             for (Node<N> elem : this.allNodes) {
                 if (elem.getData().equals(node)) {
@@ -35,7 +40,7 @@ public class GraphImpl<N> implements Graph<N> {
         return keyValue;
     }
 
-    private void findRoom (Edge<N> edgeToBeAdded, int key) {
+    private void findRoom(Edge<N> edgeToBeAdded, int key) {
         boolean setAlreadyExists = false;
         boolean wasElementAdded = false;
         for (Integer elem : this.allEdges.keySet()) {
@@ -48,8 +53,9 @@ public class GraphImpl<N> implements Graph<N> {
             wasElementAdded = this.allEdges.get(key).add(edgeToBeAdded);
         }
         else {
-            this.allEdges.put(this.numberOfEdges, new HashSet<>());
-            wasElementAdded = this.allEdges.get(this.numberOfEdges).add(edgeToBeAdded);
+            this.allEdges.put(this.numberOfMapsOfEdges, new HashSet<>());
+            wasElementAdded = this.allEdges.get(this.numberOfMapsOfEdges).add(edgeToBeAdded);
+            this.numberOfMapsOfEdges++;
         }
         if (wasElementAdded) {
             this.numberOfEdges++;
@@ -58,6 +64,67 @@ public class GraphImpl<N> implements Graph<N> {
         else {
             System.out.println("Something went wrong while trying to add an edge.");
         }
+        System.out.println(this.allEdges);
+    }
+
+    private void colourAllAdjacents(N temporaryNodeData, Node<N> temporaryNode, Queue<Node<N>> adjacentQueue) {
+        Set<N> adjacents = linkedNodes(temporaryNodeData);
+        for (N elem : adjacents) {
+            for (Node<N> nodeElem : this.allNodes) {
+                if (nodeElem.getData().equals(elem) && nodeElem.getColour().equals(Colour.WHITE)) {
+                    nodeElem.setColour(Colour.GRAY);
+                    nodeElem.setDistance(temporaryNode.getDistance() + 1);
+                    nodeElem.setParent(temporaryNode);
+                    adjacentQueue.add(nodeElem);
+                }
+            }
+        }
+    }
+
+    private List<N> buildPath(List<N> path, Node<N> targetNode) {
+        if (targetNode == null) {
+            throw new NullPointerException();
+        }
+        while (targetNode != null) {
+            path.add(targetNode.getData());
+            targetNode = targetNode.getParent();
+        }
+        return path;
+    }
+
+    /* BFS */
+    private List<N> breadthFirstSearch(N source, N target, List<N> path) {
+        Node<N> sourceNode = null;
+        Node<N> targetNode = null;
+        Node<N> temporaryNode = null;
+        for (Node<N> elem : this.allNodes) {
+            if (elem.getData().equals(source)) {
+                elem.setColour(Colour.GRAY);
+                elem.setDistance(0);
+                elem.setParent(null);
+                sourceNode = elem;
+            }
+            else if (elem.getData().equals(target)) {
+                elem.setColour(Colour.WHITE);
+                targetNode = elem;
+            }
+            else {
+                elem.setColour(Colour.WHITE);
+            }
+        }
+        Queue<Node<N>> adjacentQueue = new ConcurrentLinkedQueue<>();
+        adjacentQueue.add(sourceNode);
+        while (!adjacentQueue.isEmpty()) {
+            temporaryNode = adjacentQueue.poll();
+            colourAllAdjacents(temporaryNode.getData(), temporaryNode, adjacentQueue);
+            temporaryNode.setColour(Colour.BLACK);
+        }
+        return path = buildPath(path, targetNode);
+    }
+
+    /* DFS */
+    private List<N> depthFirstSearch(N source, N target, List<N> path) {
+        return path;
     }
 
     @Override
@@ -114,9 +181,14 @@ public class GraphImpl<N> implements Graph<N> {
     }
 
     @Override
-    public List<N> getPath(N source, N target) {
-        // TODO Auto-generated method stub
-        return null;
+    public List<N> getPath(N source, N target, SearchOption option) {
+        List<N> path = new LinkedList<>();
+        if (option.equals(SearchOption.BFS)) {
+            this.breadthFirstSearch(source, target, path);
+        }
+        else {
+            this.depthFirstSearch(source, target, path);
+        }
+        return path;
     }
-
 }
