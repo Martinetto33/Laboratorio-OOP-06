@@ -1,5 +1,6 @@
 package it.unibo.generics.graph.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -64,7 +65,6 @@ public class GraphImpl<N> implements Graph<N> {
         else {
             System.out.println("Something went wrong while trying to add an edge.");
         }
-        System.out.println(this.allEdges);
     }
 
     private void colourAllAdjacents(N temporaryNodeData, Node<N> temporaryNode, Queue<Node<N>> adjacentQueue) {
@@ -81,7 +81,7 @@ public class GraphImpl<N> implements Graph<N> {
         }
     }
 
-    private List<N> buildPath(List<N> path, Node<N> targetNode) {
+    private ArrayList<N> buildPath(ArrayList<N> path, Node<N> targetNode) {
         if (targetNode == null) {
             throw new NullPointerException();
         }
@@ -89,11 +89,15 @@ public class GraphImpl<N> implements Graph<N> {
             path.add(targetNode.getData());
             targetNode = targetNode.getParent();
         }
-        return path;
+        ArrayList<N> reversedPath = new ArrayList<>();
+        for (int i = path.size() - 1; i >= 0; i--) {
+            reversedPath.add(path.get(i));
+        }
+        return reversedPath;
     }
 
     /* BFS */
-    private List<N> breadthFirstSearch(N source, N target, List<N> path) {
+    private ArrayList<N> breadthFirstSearch(N source, N target, ArrayList<N> path) {
         Node<N> sourceNode = null;
         Node<N> targetNode = null;
         Node<N> temporaryNode = null;
@@ -123,7 +127,7 @@ public class GraphImpl<N> implements Graph<N> {
     }
 
     /* DFS */
-    private List<N> depthFirstSearch(N source, N target, List<N> path) {
+    private ArrayList<N> depthFirstSearch(N source, N target, ArrayList<N> path) {
         return path;
     }
 
@@ -182,12 +186,12 @@ public class GraphImpl<N> implements Graph<N> {
 
     @Override
     public List<N> getPath(N source, N target, SearchOption option) {
-        List<N> path = new LinkedList<>();
+        ArrayList<N> path = new ArrayList<>();
         if (option.equals(SearchOption.BFS)) {
-            this.breadthFirstSearch(source, target, path);
+            path = this.breadthFirstSearch(source, target, path);
         }
         else {
-            this.depthFirstSearch(source, target, path);
+            path = this.depthFirstSearch(source, target, path);
         }
         return path;
     }
